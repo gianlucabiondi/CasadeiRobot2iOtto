@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+
+<Configuration status="info" strict="true" name="PropertiesConfig" verbose="true">
+
+   <Properties>
+      <Property name="baseDir">log/</Property>
+      <Property name="filename">Robot2iOtto.log</Property>
+      <Property name="filePatternName">%d{YYYY-MM-dd}-id%i-Robot2iOtto.log.gz</Property>
+   </Properties>
+
+
+   <Appenders>
+
+      <Appender type="Console" name="STDOUT">
+         <Layout type="PatternLayout">
+            <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS}: %-5p [%C{1} - %logger{1}] [%t] (%F:%L) %M - %m%n</Pattern>
+         </Layout>
+      </Appender>
+
+      <Appender type="RollingFile" name="RollingFile" append="true" fileName="${filename}" filePattern="${baseDir}${filePatternName}">
+         <Layout type="PatternLayout">
+            <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS}: %-5p [%-22C{1} - %-22logger{1}] [%-22t] (%F:%L) %M - %m%n</Pattern>
+         </Layout>
+         <Policies>
+            <CronTriggeringPolicy schedule="0 0 0 * * ?" evaluateOnStartup="false" />
+            <OnStartupTriggeringPolicy/>
+            <!-- TimeBasedTriggeringPolicy interval="2" modulate="true" / -->
+            <!-- SizeBasedTriggeringPolicy size="100MB" / -->
+         </Policies>
+         <DefaultRolloverStrategy fileIndex="nomax">
+            <Delete basePath="${baseDir}" testMode="true">
+                <IfLastModified age="30d"/>
+            </Delete>
+         </DefaultRolloverStrategy>
+      </Appender>
+
+   </Appenders>
+
+   <Loggers>
+
+      <Logger name="com.turingsense.utils.HubSimulator.Listener" level="debug" additivity="false">
+         <AppenderRef ref="STDOUT" />
+         <!-- <AppenderRef ref="RollingFile" /> -->
+      </Logger>
+
+      <Root level="debug">
+         <AppenderRef ref="STDOUT" />
+         <AppenderRef ref="RollingFile" />
+      </Root>
+   </Loggers>
+
+</Configuration>
