@@ -5,9 +5,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.time.LocalDateTime;
+import java.text.SimpleDateFormat;
 import java.util.Base64;
+import java.util.Date;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -133,7 +135,9 @@ public class IOttoHandler {
         jsonTree.add("StreamValues", streamValues);
         
         // for every key-value in the map create a new "stream value"
-        LocalDateTime now = LocalDateTime.now();
+		SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+		dateFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+		String strUTCDateTime = dateFormatter.format(new Date());
         for (Map.Entry<String, String> entry : map.entrySet()) {
             JsonObject streamValue = new JsonObject();
             streamValue.addProperty("ExternalReference", entry.getKey() + "_external_reference");
@@ -146,8 +150,8 @@ public class IOttoHandler {
             JsonArray values = new JsonArray();
             JsonObject value = new JsonObject();
             value.addProperty("Value", entry.getValue());
-            value.addProperty("UTCFrom", now.toString());
-            value.addProperty("UTCTo", now.toString());
+            value.addProperty("UTCFrom", strUTCDateTime);
+            value.addProperty("UTCTo", strUTCDateTime);
             value.addProperty("ValueState", 0);
             values.add(value);
             streamValue.add("Values", values);
@@ -169,3 +173,4 @@ public class IOttoHandler {
 
     }
 }
+
