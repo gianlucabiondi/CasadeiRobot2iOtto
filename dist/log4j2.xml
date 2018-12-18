@@ -18,7 +18,7 @@
          </Layout>
       </Appender>
 
-      <Appender type="RollingFile" name="RollingFile" append="true" fileName="${baseDir}${filename}" filePattern="${baseDir}${filePatternName}">
+      <Appender type="RollingFile" name="RollingFile" append="true" fileName="${filename}" filePattern="${baseDir}${filePatternName}">
          <Layout type="PatternLayout">
             <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS}: %-5p [%-22C{1} - %-22logger{1}] [%-22t] (%F:%L) %M - %m%n</Pattern>
          </Layout>

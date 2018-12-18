@@ -5,7 +5,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,7 +40,7 @@ public class RobotHandler {
      * @return
      */
     private boolean connect() {
-        
+
         // create a new socket and connect it to the robot
         try {
             // creation
@@ -68,11 +67,11 @@ public class RobotHandler {
             connected = false;
             return false;
         }
-        
+
         return true;
 
     }
-    
+
     /**
      * Returns the connection state of the handler. 
      * Returns:true if the socket was successfully connected to a server
@@ -85,31 +84,30 @@ public class RobotHandler {
      * Send a new command to the robot and read its answer
      * @return true if the robot answer correctly
      */
-    public Map<String, String> getParamsFromRobot(String paramList) {
+    public RobotResponse getParamsFromRobot() {
         try {
 
+            if (!isConnected() && !connect()) {
+                return null;
+            }
+
             // send the command to the robot
-            RobotRequest command;
-            if (paramList == null) {
-                command = new RobotRequest();
-            } else {
-                command = new RobotRequest(paramList);
-            }
-            
+            RobotRequest command = new RobotRequest(MyProperties.getInstance().VARIABLE_EXTERNAL_REFS_LIST);
+
             if (!command.send(out)) {
-                // if we received an error during communication --> reconnect
+                // if we received an error during communication --> disconnect
                 close();
-                connect();
+                return null;
             }
-            
+
             // read the answer from the robot
-            RobotResponse response = new RobotResponse();
+            RobotResponse response = MyProperties.getInstance().ROBOT_VARIABLES;
             if (!response.receive(in)) {
-                // if we received an error during communication --> reconnect
+                // if we received an error during communication --> disconnect
                 close();
-                connect();
+                return null;
             }
-            
+
             return response;
 
         } catch (Exception e) {

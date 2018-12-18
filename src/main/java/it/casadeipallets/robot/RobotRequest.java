@@ -12,22 +12,13 @@ import org.apache.logging.log4j.Logger;
  */
 public class RobotRequest {
 
+    private static final String START_OF_COMMAND = "CMD_READ;";
     private static final String END_OF_COMMAND = "\n";
     
     private String command = null;
     private Logger log = null; // log file
 
     //constructor
-
-    /**
-     * Construct a new command using defaults
-     */
-    public RobotRequest() {
-        // get the logger
-        log = LogManager.getLogger();
-
-        setCommand("CMD_READ;variabile1;variabile2;");
-    }
 
     /**
      * Construct a new command using the string received
@@ -52,8 +43,15 @@ public class RobotRequest {
      * @return
      */
     public void setCommand(String cmd) {
-        command = cmd;
-        log.info("Prepared command: <" + command + ">");
+        if (!cmd.startsWith(START_OF_COMMAND)) {
+            command = START_OF_COMMAND + cmd;
+        } else {
+            command = cmd;
+        }
+        if (!cmd.endsWith(END_OF_COMMAND)) {
+            command = command + END_OF_COMMAND;
+        } 
+        log.info("Prepared command: <" + command.substring(0, command.length() - END_OF_COMMAND.length()) + ">");
     }
 
     // methods
@@ -66,8 +64,8 @@ public class RobotRequest {
     public boolean send(OutputStream out) {
         if (command != null) {
             try {
-                out.write((command + END_OF_COMMAND).getBytes());
-                log.info("Sent command: <" + command + ">");
+                out.write(command.getBytes());
+                log.info("Sent command: <" + command.substring(0, command.length() - END_OF_COMMAND.length()) + ">");
                 return true;
             } catch (IOException e) {
                 log.error(e);

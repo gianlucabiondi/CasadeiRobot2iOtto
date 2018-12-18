@@ -22,3 +22,7 @@ Per eseguire il programma, utilizzare questa sintassi in una finestra di comandi
 
 java Robot2iOtto <propertyFile.txt>
 
+## Sorgenti
+I sorgenti sono contenuti in gitHub:
+https://github.com/gianlucabiondi/CasadeiRobot2iOtto
+
